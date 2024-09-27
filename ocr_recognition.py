@@ -6,7 +6,7 @@ reader = easyocr.Reader(['pt'])  # Carregar o modelo para português (ou inglês
 
 def recognize_text(plate_image):
     # Verificar se a imagem da placa é válida
-    if plate_image is None:
+    if plate_image is None or plate_image.size == 0:
         return "Imagem da placa inválida"
 
     # Verificar se a imagem está colorida e converter para escala de cinza, se necessário
@@ -15,10 +15,15 @@ def recognize_text(plate_image):
     else:
         gray_plate = plate_image  # Se já estiver em grayscale
 
-    # Usar o EasyOCR para ler o texto da placa
-    result = reader.readtext(gray_plate)
+    # Binarizar a imagem da placa para facilitar a leitura do OCR
+    binary_plate = cv2.adaptiveThreshold(gray_plate, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
+                                      cv2.THRESH_BINARY, 11, 2)
 
-    print(f"Resultado do OCR: {result}")  # Adicionando log para ver o que está sendo detectado
+
+    # Usar o EasyOCR para ler o texto da placa
+    result = reader.readtext(binary_plate)
+
+    print(f"Resultado do OCR: {result}")  # Log para ver o que está sendo detectado
 
     # Verificar se algum texto foi detectado
     if result:
