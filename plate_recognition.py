@@ -16,6 +16,8 @@ placa_pattern = re.compile(r"^[A-Z]{3}\d[A-Z0-9]\d{2}$")
 output_dir_placas = 'plates'
 if not os.path.exists(output_dir_placas):
     os.makedirs(output_dir_placas)
+    
+print(f"Verificando diretório: {output_dir_placas}")
 
 def recognize_plate(frame, frame_count):
     original_img = frame.copy()

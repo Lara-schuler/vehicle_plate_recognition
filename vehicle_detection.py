@@ -12,6 +12,8 @@ vehicle_classes = [2, 3, 5, 7]  # IDs que correspondem a veículos
 output_dir_veiculos = 'vehicles'
 if not os.path.exists(output_dir_veiculos):
     os.makedirs(output_dir_veiculos)
+    
+print(f"Verificando diretório: {output_dir_veiculos}")
 
 def detect_vehicles(frame, frame_count):
     # YOLO: Detecção de veículos
