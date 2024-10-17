@@ -2,6 +2,7 @@ import cv2
 from openalpr import Alpr
 import re
 import os
+from utils import resize_plate_image
 
 # Inicializar OpenALPR
 alpr = Alpr("br", "openalpr.conf", "runtime_data")
@@ -17,8 +18,6 @@ output_dir_placas = 'plates'
 if not os.path.exists(output_dir_placas):
     os.makedirs(output_dir_placas)
     
-print(f"Verificando diretório: {output_dir_placas}")
-
 def recognize_plate(frame, frame_count):
     original_img = frame.copy()
     processed_img = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -43,7 +42,11 @@ def recognize_plate(frame, frame_count):
             
             # Verificar se a imagem não está vazia
             if plate_img.size > 0:
-                cv2.imwrite(f'{output_dir_placas}/plate_img_{frame_count}.jpg', plate_img)
+                # Aqui chamamos a função de redimensionamento
+                resized_plate_img = resize_plate_image(plate_img, target_width=300)
+
+                # Salvar a imagem redimensionada da placa
+                cv2.imwrite(f'{output_dir_placas}/plate_img_{frame_count}.jpg', resized_plate_img)
             else:
                 print(f"Imagem da placa vazia para o frame {frame_count}")
 

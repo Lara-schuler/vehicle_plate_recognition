@@ -13,8 +13,6 @@ output_dir_veiculos = 'vehicles'
 if not os.path.exists(output_dir_veiculos):
     os.makedirs(output_dir_veiculos)
     
-print(f"Verificando diretório: {output_dir_veiculos}")
-
 def detect_vehicles(frame, frame_count):
     # YOLO: Detecção de veículos
     blob = cv2.dnn.blobFromImage(frame, 0.00392, (416, 416), (0, 0, 0), True, crop=False)
