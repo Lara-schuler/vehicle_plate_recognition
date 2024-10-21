@@ -9,9 +9,10 @@ cap = cv2.VideoCapture(video_path)
 frame_count = 0
 
 # Configurações
-age_in_seconds = 10 * 60  # 2 minutos
+age_in_seconds = 2 * 60  # 2 minutos
 #age_in_seconds = 48 * 60 * 60  # 48 horas
-output_dir_placas = 'plates'
+output_dir_placas = 'plates_processed'
+output_dir_placas = 'plates_raw'
 output_dir_veiculos = 'vehicles'
 
 # Chamar a função para deletar arquivos antigos
