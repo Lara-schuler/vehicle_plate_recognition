@@ -32,7 +32,7 @@ def detect_vehicles(frame, frame_count):
             class_id = np.argmax(scores)
             confidence = scores[class_id]
 
-            if confidence > 0.4 and class_id in vehicle_classes:
+            if confidence > 0.6 and class_id in vehicle_classes:
                 center_x = int(detection[0] * frame.shape[1])
                 center_y = int(detection[1] * frame.shape[0])
                 w = int(detection[2] * frame.shape[1])
