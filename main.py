@@ -4,7 +4,7 @@ from plate_recognition import recognize_plate
 from utils import delete_old_files  # Importação corrigida
 
 # Configurações
-video_path = 'C:\\Users\\Lara Schüler\\Downloads\\videos\\output5.avi'
+video_path = 'C:\\Users\\Lara Schüler\\Downloads\\videos\\output3.avi'
 cap = cv2.VideoCapture(video_path)
 frame_count = 0
 

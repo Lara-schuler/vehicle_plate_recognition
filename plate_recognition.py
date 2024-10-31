@@ -3,6 +3,8 @@ from openalpr import Alpr
 import re
 import os
 import time 
+from utils import draw_stylized_plate_box
+from save_vehicle_data import save_vehicle_data  
 
 # Configurações do OpenALPR e diretórios
 alpr = Alpr("br", "openalpr.conf", "runtime_data")
@@ -10,7 +12,7 @@ if not alpr.is_loaded():
     raise Exception("Erro ao carregar OpenALPR")
 alpr.set_top_n(10)
 alpr.set_default_region("br")
-conf_threshold = 50
+conf_threshold = 70
 
 placa_pattern = re.compile(r"^[A-Z]{3}\d[A-Z0-9]\d{2}$")
 
@@ -18,8 +20,12 @@ output_dir_placas_raw = 'plates_raw'
 if not os.path.exists(output_dir_placas_raw):
     os.makedirs(output_dir_placas_raw)
 
+# Variável para armazenar a última placa salva
+last_saved_plate = None
+
 # Função de reconhecimento de placas
 def recognize_plate(frame, frame_count):
+    global last_saved_plate  # Permite modificar a variável global
     original_img = frame.copy()
     # Captura o tempo de início
     start_time = time.time()
@@ -29,7 +35,6 @@ def recognize_plate(frame, frame_count):
     results = alpr.recognize_array(img_str)
     for plate in results['results']:
         if plate['matches_template']:
-            
             detected_plate = plate['plate']
             confidence = plate['confidence']
 
@@ -54,7 +59,14 @@ def recognize_plate(frame, frame_count):
 
                 # Exibir informações da placa detectada
                 print(f"Placa detectada: {detected_plate} - Confiança: {confidence:.2f} - Tempo de processamento: {time.time() - start_time:.4f} segundos")
-                cv2.putText(frame, f"Placa: {detected_plate}",
-                        (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
-                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-            
+
+                # Verifica se a placa detectada é diferente da última salva
+                if detected_plate != last_saved_plate:
+                    # Salvar a placa no banco de dados
+                    save_vehicle_data(detected_plate)
+                    # Atualiza a última placa salva
+                    last_saved_plate = detected_plate
+
+                # Chama a função para desenhar o retângulo e o texto
+                draw_stylized_plate_box(frame, x1, y1, x2, y2, f"{detected_plate}")
+

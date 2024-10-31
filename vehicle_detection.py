@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import os
+from utils import draw_stylized_vehicle_box
 
 # Carregar a rede YOLO
 net = cv2.dnn.readNetFromDarknet('yolo/yolov4-tiny.cfg', 'yolo/yolov4-tiny.weights')
@@ -32,7 +33,7 @@ def detect_vehicles(frame, frame_count):
             class_id = np.argmax(scores)
             confidence = scores[class_id]
 
-            if confidence > 0.6 and class_id in vehicle_classes:
+            if confidence > 0.7 and class_id in vehicle_classes:
                 center_x = int(detection[0] * frame.shape[1])
                 center_y = int(detection[1] * frame.shape[0])
                 w = int(detection[2] * frame.shape[1])
@@ -51,13 +52,12 @@ def detect_vehicles(frame, frame_count):
         for i in indices:
             box = boxes[i]
             x, y, w, h = box
-
-            # Desenhar retângulo ao redor do veículo detectado
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-            # Obter o nome da classe (veículo)
+            
+             # Obter o nome da classe (veículo) antes da função draw_stylized_vehicle_box
             class_name = classes[class_ids[i]]
-            cv2.putText(frame, class_name, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
+            # Desenha o retângulo e o texto estilizado ao redor do veículo detectado
+            draw_stylized_vehicle_box(frame, x, y, w, h, class_name)
 
             # Recortar e salvar a imagem do veículo
             vehicle_img = frame[y:y+h, x:x+w]
