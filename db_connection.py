@@ -1,20 +1,23 @@
 import mysql.connector
-from mysql.connector import Error
+from mysql.connector import pooling, Error
 
-def create_connection():
+# Criando um pool de conexões
+connection_pool = pooling.MySQLConnectionPool(
+    pool_name="vehicle_recognition_pool",
+    pool_size=5,  # Tamanho do pool pode ser ajustado conforme a necessidade
+    host='localhost',
+    user='root',
+    password='pacoquinha',
+    database='vehicle_recognition'
+)
+
+def get_connection():
     try:
-        connection = mysql.connector.connect(
-            host='localhost',  # Alterado para 'localhost', ajuste conforme necessário
-            user='root',
-            password='pacoquinha',
-            database='vehicle_recognition'
-        )
-        
+        connection = connection_pool.get_connection()
         if connection.is_connected():
-            print("Conexão com o banco de dados estabelecida com sucesso!")
-        
+            print("Conexão obtida do pool com sucesso!")
         return connection
 
     except Error as e:
-        print(f"Erro ao conectar ao banco de dados: {e}")
+        print(f"Erro ao obter conexão do pool: {e}")
         return None

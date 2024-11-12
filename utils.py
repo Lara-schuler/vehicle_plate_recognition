@@ -2,6 +2,11 @@ import cv2
 import os
 import time
 
+# Dicionário para armazenar placas recentemente detectadas com o tempo de última detecção
+recent_plates = {}
+save_interval_seconds = 30  # Intervalo mínimo entre salvamentos da mesma placa (em segundos)
+
+
 def delete_old_files(directory, age_in_seconds):
     now = time.time()
     for filename in os.listdir(directory):
@@ -37,7 +42,7 @@ def draw_stylized_vehicle_box(frame, x, y, w, h, class_name):
 
     # Desenhar a borda superior mais grossa
     thickness_top = 4  # Espessura da borda superior
-    thickness_side = 2  # Espessura das bordas laterais
+    thickness_side = 4  # Espessura das bordas laterais
     cv2.rectangle(frame, (x, y), (x + w, y + h), rectangle_color, thickness_side)  # Bordas laterais
     cv2.line(frame, (x, y), (x + w, y), rectangle_color, thickness_top)  # Borda superior mais grossa
 
@@ -49,3 +54,15 @@ def draw_stylized_vehicle_box(frame, x, y, w, h, class_name):
     # Criar um fundo para o texto
     cv2.rectangle(frame, (text_x, text_y - text_size[1] - 2), (text_x + text_size[0] + 10, text_y + 2), text_bg_color, -1)
     cv2.putText(frame, class_name, (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_color, 1, cv2.LINE_AA)
+    
+
+def should_save_plate(detected_plate, recent_plates):
+    """Verifica se a placa deve ser salva, com base no tempo da última detecção."""
+    current_time = time.time()
+    if detected_plate in recent_plates:
+        last_seen_time = recent_plates[detected_plate]
+        if current_time - last_seen_time < save_interval_seconds:
+            return False
+    recent_plates[detected_plate] = current_time
+    return True
+

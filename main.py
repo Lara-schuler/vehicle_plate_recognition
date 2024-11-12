@@ -4,7 +4,7 @@ from plate_recognition import recognize_plate
 from utils import delete_old_files  # Importação corrigida
 
 # Configurações
-video_path = 'C:\\Users\\Lara Schüler\\Downloads\\videos\\output3.avi'
+video_path = 'C:\\Users\\Lara Schüler\\Downloads\\videos\\output5.avi'
 cap = cv2.VideoCapture(video_path)
 frame_count = 0
 
@@ -38,7 +38,7 @@ while cap.isOpened():
     # Exibir o frame processado com as detecções
     cv2.imshow('Detections vehicles and plates', frame)
 
-    if cv2.waitKey(100) & 0xFF == ord('q'):
+    if cv2.waitKey(30) & 0xFF == ord('q'):
         break
 
     frame_count += 1
